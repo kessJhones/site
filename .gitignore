@@ -1,0 +1,38 @@
+# Arquivos de ambiente
+.env
+.env.*
+
+# Arquivos de log
+*.log
+logs/
+traefik.log
+server.log
+
+# Certificados e chaves
+*.pem
+*.key
+*.crt
+
+# Cache Python
+__pycache__/
+*.py[cod]
+*$py.class
+
+# Arquivos de IDE
+.vscode/
+.idea/
+*.swp
+*.swo
+
+# Arquivos de sistema
+.DS_Store
+Thumbs.db
+
+# Arquivos temporários
+*.tmp
+*.temp
+*.bak
+
+# Arquivos de configuração sensíveis
+traefik.yml
+docker-compose.yml 

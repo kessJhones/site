@@ -1,0 +1,8 @@
+http:
+  middlewares:
+    headers:
+      headers:
+        customRequestHeaders:
+          X-Forwarded-Proto: "http"
+          X-Forwarded-Host: "localhost"
+          X-Real-IP: "127.0.0.1" 
