@@ -1,0 +1,51 @@
+version: '3'
+
+services:
+  traefik:
+    image: traefik:v2.10
+    container_name: traefik
+    restart: always
+    ports:
+      - "80:80"  # HTTP
+      - "443:443"  # HTTPS
+      - "8081:8081"  # Dashboard do Traefik
+    volumes:
+      - /var/run/docker.sock:/var/run/docker.sock:ro
+      - ./traefik.yml:/etc/traefik/traefik.yml
+      - ./traefik:/etc/traefik/dynamic
+    networks:
+      - web
+    labels:
+      - "traefik.enable=true"
+      - "traefik.http.routers.dashboard.rule=Host(`localhost`)"
+      - "traefik.http.routers.dashboard.service=api@internal"
+      - "traefik.http.routers.dashboard.entrypoints=dashboard"
+      - "traefik.http.routers.web.rule=Host(`teste.kj.dev.br`)"
+      - "traefik.http.routers.web.service=web"
+      - "traefik.http.routers.web.entrypoints=web"
+
+  web:
+    image: nginx:alpine
+    volumes:
+      - ./web:/usr/share/nginx/html
+      - ./nginx.conf:/etc/nginx/nginx.conf:ro
+    networks:
+      - web
+    restart: unless-stopped
+    labels:
+      - "traefik.enable=true"
+      - "traefik.http.services.web.loadbalancer.server.port=80"
+
+  cloudflared:
+    image: cloudflare/cloudflared:latest
+    command: tunnel run
+    environment:
+      - TUNNEL_TOKEN=${TUNNEL_TOKEN}
+    networks:
+      - web
+    depends_on:
+      - web
+
+networks:
+  web:
+    external: false 
